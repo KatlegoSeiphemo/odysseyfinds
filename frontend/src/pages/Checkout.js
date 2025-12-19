@@ -19,6 +19,12 @@ export const Checkout = () => {
     address: ''
   });
 
+  React.useEffect(() => {
+    if (cart.length === 0) {
+      navigate('/cart');
+    }
+  }, [cart, navigate]);
+
   const handleSubmit = async (e) => {
     e.preventDefault();
     setLoading(true);
@@ -39,9 +45,11 @@ export const Checkout = () => {
       };
 
       await axios.post(`${API}/orders`, orderData);
-      toast.success('Order placed successfully!');
       await clearCart();
-      navigate('/');
+      toast.success('Order placed successfully!');
+      setTimeout(() => {
+        navigate('/');
+      }, 500);
     } catch (error) {
       console.error('Failed to place order:', error);
       toast.error('Failed to place order. Please try again.');
@@ -50,10 +58,11 @@ export const Checkout = () => {
     }
   };
 
-  if (cart.length === 0) {
-    navigate('/cart');
-    return null;
-  }
+  React.useEffect(() => {
+    if (cart.length === 0) {
+      navigate('/cart');
+    }
+  }, [cart, navigate]);
 
   return (
     <div className="min-h-screen pt-24 pb-12 px-6">
