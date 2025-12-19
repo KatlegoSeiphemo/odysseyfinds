@@ -188,7 +188,8 @@ async def get_currency_rates():
             "USD": 1.0,
             "EUR": currency_converter.get_rate("USD", "EUR"),
             "GBP": currency_converter.get_rate("USD", "GBP"),
-            "JPY": currency_converter.get_rate("USD", "JPY")
+            "JPY": currency_converter.get_rate("USD", "JPY"),
+            "ZAR": currency_converter.get_rate("USD", "ZAR")
         }
         return rates
     except:
@@ -197,7 +198,8 @@ async def get_currency_rates():
             "USD": 1.0,
             "EUR": 0.92,
             "GBP": 0.79,
-            "JPY": 149.5
+            "JPY": 149.5,
+            "ZAR": 18.5
         }
 
 # Include the router in the main app

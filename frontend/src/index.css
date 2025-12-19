@@ -95,3 +95,10 @@ body::before {
         border-bottom-color: inherit;
     }
 }
+
+/* Hide platform badges */
+[data-testid*="emergent"],
+[class*="emergent"],
+a[href*="emergent"] {
+    display: none !important;
+}

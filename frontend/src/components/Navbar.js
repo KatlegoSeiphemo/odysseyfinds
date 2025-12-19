@@ -41,6 +41,7 @@ export const Navbar = () => {
                 <SelectItem value="EUR" data-testid="currency-eur">EUR</SelectItem>
                 <SelectItem value="GBP" data-testid="currency-gbp">GBP</SelectItem>
                 <SelectItem value="JPY" data-testid="currency-jpy">JPY</SelectItem>
+                <SelectItem value="ZAR" data-testid="currency-zar">ZAR</SelectItem>
               </SelectContent>
             </Select>
 

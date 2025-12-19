@@ -16,7 +16,7 @@ export const useCurrency = () => {
 
 export const CurrencyProvider = ({ children }) => {
   const [currency, setCurrency] = useState('USD');
-  const [rates, setRates] = useState({ USD: 1.0, EUR: 0.92, GBP: 0.79, JPY: 149.5 });
+  const [rates, setRates] = useState({ USD: 1.0, EUR: 0.92, GBP: 0.79, JPY: 149.5, ZAR: 18.5 });
 
   useEffect(() => {
     const fetchRates = async () => {
