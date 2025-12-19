@@ -99,6 +99,13 @@ body::before {
 /* Hide platform badges */
 [data-testid*="emergent"],
 [class*="emergent"],
-a[href*="emergent"] {
+[class*="Emergent"],
+a[href*="emergent"],
+div[style*="position: fixed"][style*="bottom"],
+div[style*="position: fixed"][style*="right"],
+img[src*="emergent"],
+button[class*="emergent"] {
     display: none !important;
+    visibility: hidden !important;
+    opacity: 0 !important;
 }
