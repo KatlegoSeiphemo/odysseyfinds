@@ -39,7 +39,8 @@ export const CurrencyProvider = ({ children }) => {
       USD: '$',
       EUR: '€',
       GBP: '£',
-      JPY: '¥'
+      JPY: '¥',
+      ZAR: 'R'
     };
     return symbols[currency] || '$';
   };
