@@ -3,18 +3,7 @@
   "rewrites": [
     {
       "source": "/api/(.*)",
-      "destination": "/api/index.py"
-    },
-    {
-      "source": "/(.*)",
-      "destination": "/frontend/build/$1"
-    }
-  ],
-  "redirects": [
-    {
-      "source": "/",
-      "destination": "/home",
-      "permanent": false
+      "destination": "api/index.py"
     }
   ]
 }

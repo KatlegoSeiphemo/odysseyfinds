@@ -1,0 +1,11 @@
+{
+  "name": "odyssey-finds-root",
+  "private": true,
+  "workspaces": [
+    "frontend"
+  ],
+  "scripts": {
+    "build": "cd frontend && npm install && npm run build",
+    "install-frontend": "cd frontend && npm install"
+  }
+}

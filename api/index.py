@@ -17,18 +17,18 @@ load_dotenv()
 mongo_url = os.environ.get('MONGO_URL')
 db_name = os.environ.get('DB_NAME')
 
+client = None
+db = None
+
 if mongo_url and db_name:
     client = AsyncIOMotorClient(mongo_url)
     db = client[db_name]
-else:
-    # Fallback or dummy for build time
-    db = None
 
-# Create the main app without a prefix
+# Create the main app
 app = FastAPI()
 
-# Create a router with the /api prefix
-api_router = APIRouter(prefix="/api")
+# Include the router with the /api prefix
+api_router = APIRouter()
 
 # Define Models
 class Product(BaseModel):
@@ -89,6 +89,8 @@ async def root():
 
 @api_router.get("/products", response_model=List[Product])
 async def get_products(category: Optional[str] = None, condition: Optional[str] = None):
+    if not db:
+        return []
     query = {}
     if category:
         query["category"] = category
@@ -100,6 +102,8 @@ async def get_products(category: Optional[str] = None, condition: Optional[str] 
 
 @api_router.get("/products/{product_id}", response_model=Product)
 async def get_product(product_id: str):
+    if not db:
+        raise HTTPException(status_code=503, detail="Database not available")
     product = await db.products.find_one({"id": product_id}, {"_id": 0})
     if not product:
         raise HTTPException(status_code=404, detail="Product not found")
@@ -107,6 +111,8 @@ async def get_product(product_id: str):
 
 @api_router.post("/cart/{session_id}")
 async def add_to_cart(session_id: str, item: CartItem):
+    if not db:
+        raise HTTPException(status_code=503, detail="Database not available")
     cart = await db.carts.find_one({"session_id": session_id}, {"_id": 0})
     
     if cart:
@@ -138,6 +144,8 @@ async def add_to_cart(session_id: str, item: CartItem):
 
 @api_router.get("/cart/{session_id}")
 async def get_cart(session_id: str):
+    if not db:
+        return {"session_id": session_id, "items": []}
     cart = await db.carts.find_one({"session_id": session_id}, {"_id": 0})
     if not cart:
         return {"session_id": session_id, "items": []}
@@ -194,7 +202,7 @@ async def get_currency_rates():
     }
 
 # Include the router in the main app
-app.include_router(api_router)
+app.include_router(api_router, prefix="/api")
 
 app.add_middleware(
     CORSMiddleware,
@@ -213,11 +221,15 @@ logger = logging.getLogger(__name__)
 
 @app.on_event("shutdown")
 async def shutdown_db_client():
-    client.close()
+    if client:
+        client.close()
 
 # Seed database with sample products
 @app.on_event("startup")
 async def seed_database():
+    if not db:
+        logger.warning("Database connection not available, skipping seeding")
+        return
     # Check if products already exist
     existing = await db.products.find_one({})
     if existing:
