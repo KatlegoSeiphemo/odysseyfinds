@@ -9,25 +9,26 @@ from pydantic import BaseModel, Field, ConfigDict
 from typing import List, Optional
 import uuid
 from datetime import datetime, timezone
-from forex_python.converter import CurrencyRates
 
-
-ROOT_DIR = Path(__file__).parent
-load_dotenv(ROOT_DIR / '.env')
+# Load environment variables if .env exists
+load_dotenv()
 
 # MongoDB connection
-mongo_url = os.environ['MONGO_URL']
-client = AsyncIOMotorClient(mongo_url)
-db = client[os.environ['DB_NAME']]
+mongo_url = os.environ.get('MONGO_URL')
+db_name = os.environ.get('DB_NAME')
+
+if mongo_url and db_name:
+    client = AsyncIOMotorClient(mongo_url)
+    db = client[db_name]
+else:
+    # Fallback or dummy for build time
+    db = None
 
 # Create the main app without a prefix
 app = FastAPI()
 
 # Create a router with the /api prefix
 api_router = APIRouter(prefix="/api")
-
-# Currency converter
-currency_converter = CurrencyRates()
 
 # Define Models
 class Product(BaseModel):
@@ -183,24 +184,14 @@ async def create_order(order_input: OrderCreate):
 
 @api_router.get("/currency/rates")
 async def get_currency_rates():
-    try:
-        rates = {
-            "USD": 1.0,
-            "EUR": currency_converter.get_rate("USD", "EUR"),
-            "GBP": currency_converter.get_rate("USD", "GBP"),
-            "JPY": currency_converter.get_rate("USD", "JPY"),
-            "ZAR": currency_converter.get_rate("USD", "ZAR")
-        }
-        return rates
-    except:
-        # Fallback rates if API fails
-        return {
-            "USD": 1.0,
-            "EUR": 0.92,
-            "GBP": 0.79,
-            "JPY": 149.5,
-            "ZAR": 18.5
-        }
+    # Fallback rates
+    return {
+        "USD": 1.0,
+        "EUR": 0.92,
+        "GBP": 0.79,
+        "JPY": 149.5,
+        "ZAR": 18.5
+    }
 
 # Include the router in the main app
 app.include_router(api_router)

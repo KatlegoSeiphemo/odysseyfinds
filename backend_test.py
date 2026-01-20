@@ -4,7 +4,7 @@ import json
 from datetime import datetime
 
 class OdysseyFindsAPITester:
-    def __init__(self, base_url="https://tech-kicks-store.preview.emergentagent.com"):
+    def __init__(self, base_url="http://localhost:5000"):
         self.base_url = base_url
         self.api_url = f"{base_url}/api"
         self.session_id = f"test_session_{datetime.now().strftime('%H%M%S')}"
